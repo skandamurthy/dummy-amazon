@@ -1,10 +1,41 @@
 <html>
 <head>
-Welcome to my project
 </head>
-<body>
-{{name}}
-{{age}}
-</body>
-</html>
 
+<body>
+{%if login == "False" %}
+
+<form action='/login' method="POST">
+	<p>username <input type="text" name="username" placeholder="username"></p>
+	<p>password <input type="text" name="password" placeholder='password'></p>
+
+	<input type="submit" value="login">
+
+</form>
+<h3>Need a new Account? Enter details to register here</h3>
+<form action='/signup' method="POST">
+	<p>name <input type="text" name="name" placeholder="name"></p>
+	<p>username <input type="text" name="username" placeholder="username"></p>
+	<p>email <input type="text" name="email" placeholder="email"></p>
+	<p>password <input type="text" name="password" placeholder='password'></p>
+	<input type="radio" name="account_type" value="seller">seller<br>
+	<input type="radio" name="account_type" value="buyer">buyer<br>
+	<input type="submit" value="Sign-in">
+
+{% else %}
+<!--{{session["user_id"]}}-->
+Here is a list of pages you can go to ,{{session}}
+<br>
+<br>
+	{% if (session["account_type"] == "buyer") %}
+		<a href = "/all_products">all products</a><br>
+
+	{% else %}
+		<a href="/add_products">add Products</a><br>
+	{% endif %}
+<a href = "/logout">Click here logout</a>
+   
+{% endif %}
+</body>
+
+</html>
