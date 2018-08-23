@@ -13,7 +13,6 @@ def search_user_by_username(username):
 	results = db["users"].find(filter_query)
 	if(results.count() > 0):
 		return results.next()
-	
 	else:
 		return None
 
@@ -26,3 +25,5 @@ def check_user(username):
 
 	else:
 		return None
+
+

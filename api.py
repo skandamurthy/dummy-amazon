@@ -1,6 +1,7 @@
 from flask import Flask, request ,render_template , redirect , url_for,session
 from models.user_model import user_signup,search_user_by_username,check_user
-from models.seller_model import new_product
+from models.seller_model import new_product,seller_products
+from models.buyer_model import buyer_products	
 
 app = Flask(__name__)
 app.secret_key = 'skanda'
@@ -22,6 +23,7 @@ def login():
 		#print(existing_user)		
 		session['user_id'] =str(existing_user['_id'])
 		session['account_type'] = str(existing_user['account_type'])
+		session['username'] = existing_user['username']
 		return redirect(url_for('index'))
 	else:
 		return render_template('error.html', message = "user name or password invaild")
@@ -38,16 +40,23 @@ def signup():
 	user_info["password"] = request.form["password"]
 	user_info["email"] = request.form["email"]
 	user_info["account_type"] = request.form["account_type"]
+	user_info["cart_details"] =[]
 	if check_user(user_info["username"]) is None:
 		results = user_signup(user_info)
 		if (results is True):
 			session['user_id'] = str(user_info['_id'])
-		return redirect(url_for('index'))
-	
+			return ("Successful")
+	else:
+		return render_template('error.html',message = 'signup failed')
+
 
 @app.route("/all_products")
 def products_function():
-	return render_template("products.html")	
+	if session["account_type"] =="seller":
+		result = seller_products(session["user_id"])
+	else:
+		result = buyer_products()
+	return render_template("products.html" ,result=result)
 
 @app.route('/add_products')
 def func():
@@ -59,9 +68,21 @@ def add_product_page():
 	product_info["name"] =request.form["name"]
 	product_info["price"] = request.form["price"]
 	product_info["description"] = request.form["description"]
+	product_info["user_id"] =session["user_id"]
+	product_info["username"] =session["username"]	
 	new_product(product_info)	
-	return render_template("products.html")
+	return redirect(url_for('products_function'))
 
+app.route('/add_to_cart')
+def add_to_cart_done():
+	return redirect(url_for("products_function"))
+
+@app.route('/add_to_cart', methods=['POST'])
+def add_to_cart():
+	product_id =request.form["product_id"]
+	print(product_id)
+	return redirect(url_for("products_function"))
+	
 
 if (__name__=="__main__"):
 	app.run(debug=True)

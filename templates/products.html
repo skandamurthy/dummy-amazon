@@ -2,13 +2,20 @@
 <head>
 </head>
 <body>
-<ol>
-	<li>Appliances	
-		<ul>
-			<li>Fridge</li>
-		</ul>
+<!--{{result}}-->	
+<ul>
+{% for a_dict in result %}
+	<li>
+		<strong>name:{{a_dict["name"]}}</strong><br>
+		<p>{{a_dict["price"]}}</p>
+		<h4>{{a_dict["description"]}}</h4>
+		<strong>{{a_dict["username"]}}</strong>
+		{{a_dict["_id"]}}
+		<form action="/add_to_cart" method="POST">
+		<input name="product_id" type="hidden" "value=a_dict["_id"]"/>		
+		<input type=submit value="Add to cart"> 	
 	</li>
-</ol>
-
+{% endfor %}
+<a href = "/logout">Click here logout</a>
 </html>
 
