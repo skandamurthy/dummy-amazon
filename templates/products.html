@@ -12,10 +12,12 @@
 		<strong>{{a_dict["username"]}}</strong>
 		{{a_dict["_id"]}}
 		<form action="/add_to_cart" method="POST">
-		<input name="product_id" type="hidden" "value=a_dict["_id"]"/>		
+		<input name="product_id" type="hidden" value="{{a_dict['_id']}}" />		
 		<input type=submit value="Add to cart"> 	
 	</li>
 {% endfor %}
+<a href ="/cart_page">Click here to check your cart</a>
 <a href = "/logout">Click here logout</a>
+
 </html>
 
