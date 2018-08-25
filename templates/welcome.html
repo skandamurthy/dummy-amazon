@@ -27,14 +27,11 @@
 Here is a list of pages you can go to ,{{session}}
 <br>
 <br>
-	{% if (session["account_type"] == "buyer") %}
-		<a href = "/all_products">all products</a><br>
-
-	{% else %}
-		<a href="/add_products">add Products</a><br>
+	{% if (session["account_type"] == "seller") %}
+		<a href = "/add_products">add products</a><br>
 	{% endif %}
+<a href="/all_products">all Products</a><br>
 <a href = "/logout">Click here logout</a>
-   
 {% endif %}
 </body>
 

@@ -48,7 +48,7 @@ def signup():
 		results = user_signup(user_info)
 		if (results is True):
 			session['user_id'] = str(user_info['_id'])
-			return render_template(url_for('index'))
+			return redirect(url_for('index'))
 	else:
 		return render_template('error.html',message = 'signup failed')
 
@@ -63,7 +63,7 @@ def products_function():
 
 @app.route('/add_products')
 def func():
-	return render_template("add_products.html")	
+	return render_template("add_products.html")
 
 @app.route('/product_details', methods = ['POST'])
 def add_product_page():
@@ -73,26 +73,22 @@ def add_product_page():
 	product_info["description"] = request.form["description"]
 	product_info["user_id"] =session["user_id"]
 	product_info["username"] =session["username"]	
-	new_product(product_info)	
+	new_product(product_info)
 	return redirect(url_for('products_function'))
 
-app.route('/add_to_cart')
-def add_to_cart_done():
-	return redirect(url_for("products_function"))
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
 	#import pdb;pdb.set_trace()
 	product_id =request.form["product_id"]
-	res=update_cart_details(session["user_id"],product_id)
-	print(res)	
+	update_cart_details(session["user_id"],product_id)
+	#print(res)
 	return redirect(url_for("products_function"))
 
 @app.route('/cart_page')
 def cart_page():
 	cart_list = cart_details(session["user_id"])
 	return render_template("cart_page.html",cart_list=cart_list)
-	
 
 if (__name__=="__main__"):
 	app.run(debug=True)

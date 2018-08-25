@@ -3,7 +3,7 @@
 </head>
 <body>
 <!--{{result}}-->	
-<ul>
+
 {% for a_dict in result %}
 	<li>
 		<strong>name:{{a_dict["name"]}}</strong><br>
@@ -11,13 +11,18 @@
 		<h4>{{a_dict["description"]}}</h4>
 		<strong>{{a_dict["username"]}}</strong>
 		{{a_dict["_id"]}}
-		<form action="/add_to_cart" method="POST">
-		<input name="product_id" type="hidden" value="{{a_dict['_id']}}" />		
-		<input type=submit value="Add to cart"> 	
+		{% if session["account_type"] =="buyer" %}
+			<form action="/add_to_cart" method="POST">
+			<input name="product_id" type="hidden" value="{{a_dict['_id']}}"/>
+			<input type=submit value="Add to cart">
+			</form>
+		{% endif %} 
 	</li>
 {% endfor %}
-<a href ="/cart_page">Click here to check your cart</a>
+{% if session["account_type"]=="buyer" %}
+	<a href ="/cart_page">Click here to check your cart</a>
+{% endif %}
 <a href = "/logout">Click here logout</a>
-
+</body>
 </html>
 
