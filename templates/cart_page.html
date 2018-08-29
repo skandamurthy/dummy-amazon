@@ -2,15 +2,15 @@
 <head>
 </head>
 <body>
-{{cart_list}}	
+<!--{{cart_dict}}-->
 <ul>
-{% for a_dict in cart_list %}
+{% for a_dict in cart_dict %}
 	<li>
 		<strong>name:{{a_dict["name"]}}</strong><br>
 		<p>{{a_dict["price"]}}</p>
 		<h4>{{a_dict["description"]}}</h4>
 		<strong>{{a_dict["username"]}}</strong>
-		{{a_dict["_id"]}}	
+		<p>quantity:{{a_dict["quantity"]}}</p>
 	</li>
 {% endfor %}
 <a href = "/logout">Click here logout</a>
