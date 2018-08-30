@@ -33,9 +33,12 @@ def update_cart_details(user_id,product_id,quantity):
 	quantity = int(quantity)
 	user_info = db["users"].find_one({"_id":ObjectId(user_id)})
 	cart_dict = user_info["cart"]
-	if product_id not in cart_dict.keys():
-		cart_dict[product_id] = quantity
-	else:
-		cart_dict[product_id] += quantity
-	db["users"].update({"_id" : ObjectId(user_id)},{"$set" : {"cart" : cart_dict}})
+	db["users"].update({"_id" : ObjectId(user_id)},{"$inc" : {"cart."+product_id : quantity}})
 #print(buyer_products())
+
+def remove_item(product_id,user_id):
+	user_info = db['users'].find_one({"_id":ObjectId(user_id)})
+	cart_dict = user_info['cart']
+	cart_dict.pop(product_id)
+	db["users"].update({"_id": ObjectId(user_id)},{"$unset": {"cart."+product_id: ""}})
+
