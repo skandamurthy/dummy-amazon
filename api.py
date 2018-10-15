@@ -1,7 +1,13 @@
 from flask import Flask, request ,render_template , redirect , url_for,session
 from models.user_model import user_signup,search_user_by_username,check_user
 from models.seller_model import new_product,seller_products
-from models.buyer_model import buyer_products,cart_details,update_cart_details
+from models.buyer_model import buyer_products,cart_details,update_cart_details,update_cart_in_cartpage
+from chatterbot import ChatBot
+from chatterbot.trainers import ChatterBotCorpusTrainer
+
+english_bot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
+english_bot.set_trainer(ChatterBotCorpusTrainer)
+english_bot.train("chatterbot.corpus.english.greetings")
 
 app = Flask(__name__)
 app.secret_key = 'skanda'
@@ -42,8 +48,9 @@ def signup():
 	user_info["password"] = request.form["password"]
 	user_info["email"] = request.form["email"]
 	user_info["account_type"] = request.form["account_type"]
+	user_info["total"] = 0
 	if user_info["account_type"] == "buyer":
-		user_info["cart_details"] = []
+		user_info["cart"] = {}
 	if check_user(user_info["username"]) is None:
 		results = user_signup(user_info)
 		if (results is True):
@@ -74,7 +81,7 @@ def add_product_page():
 	product_info["user_id"] = session["user_id"]
 	product_info["username"] = session["username"]	
 	new_product(product_info)
-	return redirect(url_for("products_function"))			#
+	return redirect(url_for("products_function"))			
 
 @app.route('/add_to_cart', methods = ['POST'])
 def add_to_cart():
@@ -82,14 +89,26 @@ def add_to_cart():
 	product_id = request.form["product_id"]
 	quantity = request.form["quantity"]
 	update_cart_details(session["user_id"],product_id,quantity)
+	total_cost(price,quantity,session["total"])
 	#print(res)
+	return redirect(url_for("cart_page"))
+
+@app.route('/remove_item', methods = ['POST'])
+def remove_items():
+	product_id =request.form["product_id"]
+	quantity = request.form["quantity"]
+	update_cart_in_cartpage(product_id,session["user_id"],quantity)
 	return redirect(url_for("cart_page"))
 
 @app.route('/cart_page')
 def cart_page():
 	cart_dict= cart_details(session["user_id"])
-
 	return render_template("cart_page.html",cart_dict = cart_dict)
+@app.route('/chatterbot')
+def chatterbot():
+	userText = request.args.get('msg')
+	return render_template("welcome.html",message=str(english_bot.get_response(userText)))
+	
 
 if (__name__=="__main__"):
 	app.run(debug = True)

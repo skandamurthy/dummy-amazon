@@ -3,6 +3,11 @@
 </head>
 <body>
 <!--{{result}}-->
+<!--for search-->
+<form id="tfnewsearch" method="get" action="http://www.google.com">
+		        <input type="text" class="tftextinput" name="q" size="21" maxlength="120"><input type="submit" value="search" class="tfbutton">
+		</form>
+
 
 {% for a_dict in result %}
 	<li>
@@ -13,9 +18,10 @@
 		{{a_dict["_id"]}}
 		{% if session["account_type"] =="buyer" %}
 			<form action="/add_to_cart" method="POST">
-			<input name="product_id" type="hidden" value="{{a_dict['_id']}}"/>
-			<input name="quantity" type="number" min="1" default ="1" max = "10">	
-			<input type=submit value="Add to cart">
+			<input name="product_id" type="hidden" value="{{a_dict['_id']}}">
+			<input name="quantity" type="number" min="1" max = "100" value="1">	
+			<input name="price" type="hidden" value="{{a_dict['price']}}">
+			<input type=submit value="Add to cart"/>
 			</form>
 		{% endif %}
 	</li>

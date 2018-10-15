@@ -4,7 +4,7 @@ client = MongoClient()
 db = client['webdatabase']
 ans = []
 def buyer_products():
-	result1 = db["products"].find({})	
+	result1 = db["products"].find({})
 	for post in result1:
 		ans.append(post)
 	return ans
@@ -36,9 +36,13 @@ def update_cart_details(user_id,product_id,quantity):
 	db["users"].update({"_id" : ObjectId(user_id)},{"$inc" : {"cart."+product_id : quantity}})
 #print(buyer_products())
 
-def remove_item(product_id,user_id):
+def update_cart_in_cartpage(product_id,user_id,quantity):
 	user_info = db['users'].find_one({"_id":ObjectId(user_id)})
 	cart_dict = user_info['cart']
-	cart_dict.pop(product_id)
-	db["users"].update({"_id": ObjectId(user_id)},{"$unset": {"cart."+product_id: ""}})
+	#cart_dict.pop(product_id)
+	quantity = int(quantity)
+	if quantity ==0:
+		db["users"].update({"_id": ObjectId(user_id)},{"$unset": {"cart."+product_id: ""}})
+	else:
+		db["users"].update({"_id": ObjectId(user_id)},{"$set": {"cart."+product_id: quantity}})
 
